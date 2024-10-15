@@ -1,260 +1,169 @@
-# StreamFinder - Intelligent Content Discovery Platform
+# StreamFinder
 
-A full-stack, scalable recommendation system that aggregates content from multiple streaming platforms using hybrid recommendation algorithms and real-time API integration.
+A video search tool that helps you discover movies, TV shows, YouTube videos, shorts, and reels across multiple streaming platforms - all in one place.
 
-## Architecture Overview
+## What It Does
 
-StreamFinder implements a **microservices-inspired architecture** with clear separation of concerns between the frontend presentation layer and backend API gateway. The system leverages **asynchronous I/O** for concurrent third-party API calls, achieving sub-second response times through intelligent caching strategies and optimized data pipelines.
+StreamFinder aggregates video content from various sources and provides intelligent recommendations based on your search. Whether you're looking for movies on Netflix, shows on Prime Video, or trending YouTube content, StreamFinder finds similar content across all platforms.
 
-### Tech Stack
+**Search across:**
+- Streaming platforms: Netflix, Prime Video, Disney+, HBO Max, Hulu, Apple TV+
+- YouTube: Videos, Shorts, trending content
+- Movies and TV shows with detailed metadata
+
+## Features
+
+- **Smart Recommendations**: Multi-factor algorithm that considers genre, cast, director, ratings, and more
+- **Platform Detection**: Automatically finds where content is available to stream
+- **Watchlist**: Save videos to watch later (stored locally in your browser)
+- **Detailed Info**: Hover over any video to see full details including ratings, runtime, and synopsis
+- **Fast Search**: Cached results for quick repeated searches
+- **Clean UI**: Modern, responsive design that works on desktop and mobile
+
+## Tech Stack
 
 **Backend:**
-- **FastAPI** - High-performance async Python framework with automatic OpenAPI documentation
-- **SQLAlchemy ORM** - Database abstraction layer supporting horizontal scaling
-- **SQLite** (development) / **PostgreSQL-ready** (production)
-- **httpx** - Async HTTP client for concurrent API requests
-- **TTL Caching** - In-memory cache with time-to-live expiration (3-minute default)
+- FastAPI (Python web framework)
+- SQLAlchemy (Database ORM)
+- TMDB API (Movie/TV data)
+- YouTube Data API v3 (Video content)
 
 **Frontend:**
-- **React 18** - Component-based UI with hooks for state management
-- **Vite** - Lightning-fast build tool with HMR (Hot Module Replacement)
-- **Tailwind CSS** - Utility-first framework for responsive, mobile-first design
-- **LocalStorage API** - Client-side persistence for watchlist functionality
+- React 18 with Vite
+- Tailwind CSS
+- LocalStorage for watchlist
 
-**External APIs:**
-- TMDB (The Movie Database) - Content metadata and recommendations
-- YouTube Data API v3 - Video search and trending content
+## Getting Started
 
-## System Design & Scalability
+### Prerequisites
 
-### Key Technical Decisions
+- Python 3.9+
+- Node.js 18+
+- TMDB API Key ([Get one here](https://www.themoviedb.org/settings/api))
+- YouTube Data API Key ([Get one here](https://console.cloud.google.com/apis/library/youtube.googleapis.com))
 
-1. **Async/Await Pattern**: All I/O-bound operations use Python's `asyncio` to handle concurrent API requests without blocking, enabling the system to serve multiple users efficiently.
+### Installation
 
-2. **Caching Layer**: Implements TTL-based caching (`cachetools.TTLCache`) to reduce redundant API calls, decreasing latency by ~80% for repeated queries and staying within API rate limits.
-
-3. **Horizontal Scalability**: Stateless backend design allows for easy horizontal scaling behind a load balancer (e.g., AWS ALB, NGINX).
-
-4. **Error Handling & Fault Tolerance**: Graceful degradation with fallback mechanisms - if external APIs fail, the system serves cached or mock data to maintain availability.
-
-5. **Clean Code Principles**: Modular service layer with single-responsibility functions, consolidated helper methods to reduce code duplication (DRY principle), and type hints for better maintainability.
-
-### Architecture Diagram
-
-```
-┌─────────────┐      HTTP/REST      ┌──────────────────┐
-│   React     │ ◄──────────────────► │   FastAPI        │
-│   Frontend  │      JSON API       │   Backend        │
-│   (Vite)    │                     │   (Uvicorn)      │
-└─────────────┘                     └──────────────────┘
-      │                                      │
-      │                                      ├───► TMDB API
-      │                                      │
-      └─── LocalStorage                     ├───► YouTube API
-           (Client-side)                    │
-                                            └───► SQLite DB
-                                                  (Interactions Log)
-```
-
-## Core Features
-
-### 1. Multi-Factor Recommendation Algorithm
-
-Implements a **hybrid recommendation system** that scores content based on 10+ similarity factors:
-
-- **Collaborative signals**: Cast overlap, director matching, production company
-- **Content-based signals**: Genre similarity, keyword matching, runtime proximity
-- **Popularity metrics**: TMDB vote average, vote count, trending scores
-- **Contextual factors**: Release year proximity, budget tier, franchise detection
-
-**Algorithm complexity**: O(n log n) where n is the number of candidates, using weighted scoring and efficient sorting.
-
-### 2. Real-Time Content Aggregation
-
-- **Concurrent API calls** using `asyncio.gather()` for parallel data fetching
-- **Platform availability detection** across Netflix, Prime Video, Disney+, HBO Max, Hulu, Apple TV+
-- **Deduplication logic** to prevent showing the same content multiple times when available on multiple platforms
-
-### 3. Interactive UI/UX
-
-- **Lazy loading** with skeleton states for perceived performance
-- **Hover overlays** showing detailed metadata without navigation
-- **Client-side watchlist** using browser storage (no backend dependency)
-- **Responsive grid layout** optimized for desktop, tablet, and mobile viewports
-
-### 4. Performance Optimizations
-
-- **Request debouncing** through caching layer
-- **Payload minimization** - only essential fields transmitted over the wire
-- **Gradient animations** using CSS transforms (GPU-accelerated)
-- **Code splitting** ready for production builds
-
-## Installation & Deployment
-
-### Local Development
-
+1. **Clone the repository**
 ```bash
-# Backend Setup
+git clone https://github.com/KushagraKanaujia/streamfinder.git
+cd streamfinder
+```
+
+2. **Set up the Backend**
+```bash
 cd backend
 python3 -m venv venv
-source venv/bin/activate
+source venv/bin/activate  # On Windows: venv\Scripts\activate
 pip install -r requirements.txt
+```
 
-# Configure environment variables
-cp .env.example .env
-# Add your API keys to .env
+3. **Configure API Keys**
+Create a `.env` file in the `backend` directory:
+```bash
+TMDB_API_KEY=your_tmdb_api_key_here
+YOUTUBE_API_KEY=your_youtube_api_key_here
+```
 
-# Run backend server
+4. **Run the Backend**
+```bash
 uvicorn app.main:app --reload --port 8000
+```
 
-# Frontend Setup (separate terminal)
+The backend will start at `http://localhost:8000`
+
+5. **Set up the Frontend** (in a new terminal)
+```bash
 cd frontend
 npm install
 npm run dev
 ```
 
-### Production Deployment
+The frontend will start at `http://localhost:5173`
 
-**Docker Containerization** (recommended):
+6. **Open in Browser**
+Visit `http://localhost:5173` and start searching for videos!
 
-```dockerfile
-# Multi-stage build for optimized image size
-FROM python:3.11-slim AS backend
-WORKDIR /app
-COPY backend/requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-COPY backend .
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+## How to Use
 
-FROM node:20-alpine AS frontend
-WORKDIR /app
-COPY frontend/package*.json .
-RUN npm ci --production
-COPY frontend .
-RUN npm run build
-```
+1. Choose a category (Movies, TV Shows, YouTube Videos, or Shorts/Reels)
+2. Enter a search term or select from trending options
+3. Select your region (US, UK, IN, etc.)
+4. Click "Find Content" to get recommendations
+5. Click on any video card to visit the platform or watch
+6. Add videos to your watchlist for later
 
-**Scalability Considerations**:
-- Deploy behind **AWS Application Load Balancer** or **NGINX** for load distribution
-- Use **Redis** or **Memcached** for distributed caching across instances
-- Migrate to **PostgreSQL** with connection pooling for production databases
-- Implement **API rate limiting** using Redis-based token bucket algorithm
-- Enable **CloudFront CDN** for static asset delivery
+## API Endpoints
 
-## API Documentation
+The backend provides the following endpoints:
 
-### Endpoints
+- `POST /api/recommendations` - Get video recommendations
+- `POST /api/interactions` - Log user interactions
+- `GET /api/health` - Health check
 
-**POST** `/api/recommendations`
-```json
-{
-  "category": "movies",
-  "searchQuery": "Inception",
-  "region": "US",
-  "limit": 20
-}
-```
-
-Response includes scored and ranked recommendations with streaming platform URLs.
-
-**POST** `/api/interactions` - Logs user clicks for future ML model training
-
-**GET** `/api/health` - Health check endpoint for load balancer probes
-
-FastAPI auto-generates OpenAPI docs at `/docs` (Swagger UI).
+Full API documentation available at `http://localhost:8000/docs` when running locally.
 
 ## Project Structure
 
 ```
-StreamFinder/
+streamfinder/
 ├── backend/
 │   ├── app/
-│   │   ├── main.py              # FastAPI application entry point
-│   │   ├── config.py            # Environment configuration
-│   │   ├── database.py          # Database connection & session management
-│   │   ├── models.py            # SQLAlchemy ORM models
-│   │   ├── routes.py            # RESTful API endpoints
-│   │   └── services.py          # Business logic & recommendation engine
-│   ├── requirements.txt         # Python dependencies
-│   └── .env                     # API keys (not in version control)
+│   │   ├── main.py         # FastAPI application
+│   │   ├── config.py       # Configuration
+│   │   ├── database.py     # Database setup
+│   │   ├── models.py       # Data models
+│   │   ├── routes.py       # API endpoints
+│   │   └── services.py     # Recommendation logic
+│   └── requirements.txt
 ├── frontend/
 │   ├── src/
-│   │   ├── components/          # Reusable React components
-│   │   │   ├── FilterWizard.jsx
-│   │   │   ├── RecommendationCard.jsx
-│   │   │   └── LoadingState.jsx
-│   │   ├── App.jsx              # Main application component
-│   │   └── main.jsx             # React entry point
-│   ├── index.html
+│   │   ├── components/     # React components
+│   │   ├── App.jsx
+│   │   └── main.jsx
 │   ├── package.json
-│   ├── vite.config.js           # Build configuration
-│   └── tailwind.config.js       # Styling configuration
+│   └── vite.config.js
 └── README.md
 ```
 
-## Testing & Quality Assurance
+## How It Works
 
-### Testing Strategy (Expandable)
+1. **Search**: You enter what you're looking for (e.g., "action movies", "comedy shows", "tech reviews")
+2. **Aggregation**: The backend queries TMDB and YouTube APIs simultaneously
+3. **Recommendation**: Content is scored based on relevance, ratings, popularity, and similarity
+4. **Results**: You get a unified list of videos across all platforms with links to watch
 
-- **Unit tests**: Test individual service methods with mocked API responses
-- **Integration tests**: Verify end-to-end flow from API call to database persistence
-- **Load testing**: Use `locust` or `k6` to simulate concurrent users
-- **Frontend tests**: Jest + React Testing Library for component testing
+## Troubleshooting
 
-### Code Quality Tools
+**Backend won't start:**
+- Make sure you've activated the virtual environment
+- Check that API keys are set in `.env` file
+- Verify Python 3.9+ is installed: `python3 --version`
 
-- **Pylint / Flake8**: Python linting with configured rules
-- **Prettier**: Frontend code formatting
-- **Type checking**: Python type hints + optional mypy validation
+**Frontend won't start:**
+- Make sure Node.js 18+ is installed: `node --version`
+- Try deleting `node_modules` and running `npm install` again
+- Check that the backend is running on port 8000
 
-## Future Enhancements
+**No results showing:**
+- Verify both TMDB and YouTube API keys are valid
+- Check browser console for errors (F12)
+- Make sure backend terminal shows successful API responses
 
-1. **Machine Learning Pipeline**:
-   - Train collaborative filtering model on interaction logs
-   - Implement A/B testing framework for algorithm improvements
+## Contributing
 
-2. **Advanced Features**:
-   - User authentication with JWT tokens
-   - Personalized recommendations based on watch history
-   - Social features (share lists, follow friends)
-
-3. **Infrastructure**:
-   - Kubernetes deployment with auto-scaling
-   - CI/CD pipeline (GitHub Actions → AWS ECS/Fargate)
-   - Monitoring with Prometheus + Grafana dashboards
-   - Centralized logging (ELK stack or CloudWatch)
-
-4. **Performance**:
-   - Server-side rendering (SSR) for SEO optimization
-   - GraphQL API as alternative to REST
-   - WebSocket support for real-time updates
-
-## Technical Highlights for SWE Roles
-
-This project demonstrates:
-
-✅ **System Design**: Scalable architecture with clear service boundaries
-✅ **Async Programming**: Efficient concurrent I/O handling
-✅ **API Integration**: Managing multiple third-party services
-✅ **Caching Strategies**: Performance optimization through intelligent caching
-✅ **Error Handling**: Graceful degradation and fault tolerance
-✅ **Clean Code**: DRY principles, helper methods, type safety
-✅ **Frontend Patterns**: Modern React hooks, component composition
-✅ **Responsive Design**: Mobile-first, accessible UI
-✅ **Production-Ready**: Docker support, health checks, structured logging
-✅ **Database Design**: ORM usage, migration-ready schema
-
-## Performance Metrics
-
-- **Response time**: <500ms for cached queries, <2s for fresh API calls
-- **Throughput**: Handles 100+ concurrent users with single instance
-- **Cache hit rate**: ~75% for repeated queries
-- **API efficiency**: Batch requests reduce external API calls by 60%
+Feel free to fork this project and customize it for your needs. Some ideas:
+- Add more streaming platforms
+- Implement user accounts and personalized recommendations
+- Add filters for ratings, year, genre
+- Create a Chrome extension version
 
 ## License
 
-MIT License - See LICENSE file for details.
+MIT License - Feel free to use this project for learning or personal use.
 
-## Contact
+## Acknowledgments
 
-Built as a demonstration of full-stack development capabilities for modern web applications.
+- TMDB for movie and TV show data
+- YouTube Data API for video content
+- Built with FastAPI, React, and Tailwind CSS
