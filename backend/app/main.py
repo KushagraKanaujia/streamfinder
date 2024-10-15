@@ -1,6 +1,9 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from contextlib import asynccontextmanager
+import os
+from pathlib import Path
 
 from app.database import init_db
 from app.routes import router
@@ -39,15 +42,7 @@ app.add_middleware(
 # Include all routes
 app.include_router(router, prefix="/api", tags=["recommendations"])
 
-
-@app.get("/")
-async def root():
-    """
-    Root endpoint that shows API info.
-    """
-    return {
-        "service": "QuickFlicks API",
-        "version": __version__,
-        "docs": "/docs",
-        "health": "/api/health",
-    }
+# Mount static files for frontend (if built)
+static_dir = Path(__file__).parent.parent.parent / "frontend" / "dist"
+if static_dir.exists():
+    app.mount("/", StaticFiles(directory=str(static_dir), html=True), name="static")
