@@ -40,18 +40,25 @@ function App() {
       }
 
       const data = await response.json()
-      setRecommendations(data.results)
 
-      // Log the interaction
-      logInteraction({
-        category,
-        searchQuery,
-        region,
-        recommendations: data.results.map((r) => r.id),
-      })
+      // Check if we have results
+      if (data && data.results && Array.isArray(data.results)) {
+        setRecommendations(data.results)
+
+        // Log the interaction
+        logInteraction({
+          category,
+          searchQuery,
+          region,
+          recommendations: data.results.map((r) => r.id),
+        })
+      } else {
+        setRecommendations([])
+        setError('No recommendations found. Try a different search.')
+      }
     } catch (err) {
       setError('Something went wrong. Please try again.')
-      console.error(err)
+      console.error('Error fetching recommendations:', err)
     } finally {
       setLoading(false)
     }
