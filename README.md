@@ -4,9 +4,9 @@ A video search tool that helps you discover movies, TV shows, YouTube videos, sh
 
 ## 🔗 Live Demo
 
-**[Try StreamFinder Live](https://streamfinder-delta.vercel.app)**
+**[Try StreamFinder Live](https://frontend-mocha-eight-64.vercel.app)**
 
-- **Frontend**: https://streamfinder-delta.vercel.app
+- **Frontend**: https://frontend-mocha-eight-64.vercel.app
 - **Backend API**: https://streamfinder-backend-6fs2.onrender.com
 - **API Docs**: https://streamfinder-backend-6fs2.onrender.com/docs
 
