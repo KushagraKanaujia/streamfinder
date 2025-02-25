@@ -3,9 +3,7 @@ services:
     name: streamfinder
     runtime: python
     plan: free
-    buildCommand: |
-      pip install -r backend/requirements.txt
-      cd frontend && npm install && npm run build && cd ..
+    buildCommand: cd frontend && npm install && npm run build && cd ..
     startCommand: cd backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: YOUTUBE_API_KEY
