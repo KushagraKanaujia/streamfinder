@@ -2,6 +2,14 @@
 
 A video search tool that helps you discover movies, TV shows, YouTube videos, shorts, and reels across multiple streaming platforms - all in one place.
 
+## 🔗 Live Demo
+
+**[Try StreamFinder Live](https://frontend-mocha-eight-64.vercel.app)**
+
+- **Frontend**: https://frontend-mocha-eight-64.vercel.app
+- **Backend API**: https://streamfinder-backend-6fs2.onrender.com
+- **API Docs**: https://streamfinder-backend-6fs2.onrender.com/docs
+
 ## What It Does
 
 StreamFinder aggregates video content from various sources and provides intelligent recommendations based on your search. Whether you're looking for movies on Netflix, shows on Prime Video, or trending YouTube content, StreamFinder finds similar content across all platforms.
