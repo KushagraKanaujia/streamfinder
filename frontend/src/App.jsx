@@ -9,10 +9,11 @@ function App() {
   const [error, setError] = useState(null)
   const [sessionId] = useState(() => Math.random().toString(36).substring(7))
   const [showResults, setShowResults] = useState(false)
+  const API_BASE = import.meta.env.VITE_API_URL || ''
 
   // Check backend health on mount
   useEffect(() => {
-    fetch('/api/health')
+    fetch(`${API_BASE}/api/health`)
       .then((res) => res.json())
       .then((data) => console.log('Backend connected:', data))
       .catch(() => console.warn('Backend not available'))
@@ -24,7 +25,7 @@ function App() {
     setShowResults(true)
 
     try {
-      const response = await fetch('/api/recommendations', {
+      const response = await fetch(`${API_BASE}/api/recommendations`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -78,7 +79,7 @@ function App() {
 
   const logInteraction = async (data) => {
     try {
-      await fetch('/api/interactions', {
+      await fetch(`${API_BASE}/api/interactions`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
