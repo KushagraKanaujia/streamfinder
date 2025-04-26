@@ -30,10 +30,13 @@ app = FastAPI(
 )
 
 # CORS middleware to allow frontend requests
-# In production, replace "*" with your specific frontend domain
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+        "https://streamfinder-app.vercel.app",
+        "http://localhost:5173",  # Local development
+        "http://localhost:3000",  # Alternative local port
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

@@ -1,6 +1,6 @@
 from typing import Dict, List, Optional
 from fastapi import APIRouter, Depends, HTTPException
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, validator
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
@@ -14,9 +14,19 @@ recommendation_service = RecommendationService()
 class RecommendationRequest(BaseModel):
     """Input schema for recommendation requests"""
     category: str  # movies, tv, youtube, tiktok
-    searchQuery: str  # what the user is searching for
+    searchQuery: str = Field(..., min_length=1, max_length=200)  # what the user is searching for
     region: str = "US"
-    limit: int = 20
+    limit: int = Field(default=20, ge=1, le=50)
+
+    @validator('searchQuery')
+    def validate_search_query(cls, v):
+        # Strip whitespace
+        v = v.strip()
+        if not v:
+            raise ValueError('Search query cannot be empty')
+        if len(v) > 200:
+            raise ValueError('Search query too long (max 200 characters)')
+        return v
 
 
 class InteractionLog(BaseModel):

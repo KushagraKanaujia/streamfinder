@@ -1,6 +1,7 @@
 import asyncio
 import random
 import re
+import logging
 from typing import List, Dict, Optional
 from datetime import datetime, timedelta
 from cachetools import TTLCache
@@ -8,6 +9,9 @@ import httpx
 from urllib.parse import quote
 
 from app.config import settings
+
+# Configure logging
+logger = logging.getLogger(__name__)
 
 # In-memory cache with 3-minute TTL to reduce API calls
 recommendation_cache = TTLCache(maxsize=1000, ttl=settings.cache_ttl)
@@ -227,9 +231,7 @@ class RecommendationService:
 
         except Exception as e:
             # Log the error for debugging
-            print(f"TMDB Error: {type(e).__name__}: {str(e)}")
-            import traceback
-            traceback.print_exc()
+            logger.error(f"TMDB Error: {type(e).__name__}: {str(e)}", exc_info=True)
             # Fallback to YouTube search on any error
             return await self._search_youtube_content(
                 f"{category} similar to {search_query}",
@@ -548,7 +550,7 @@ class RecommendationService:
                 }
 
         except Exception as e:
-            print(f"Error getting TMDB details: {e}")
+            logger.error(f"Error getting TMDB details: {e}", exc_info=True)
             return None
 
     async def _get_tmdb_recommendations_multi_strategy(
@@ -607,7 +609,7 @@ class RecommendationService:
             return list(all_candidates.values())[:30]  # Return top 30 candidates
 
         except Exception as e:
-            print(f"Error in multi-strategy recommendations: {e}")
+            logger.error(f"Error in multi-strategy recommendations: {e}", exc_info=True)
             return list(all_candidates.values())
 
     async def _get_genre_ids(self, genre_names: List[str], media_type: str) -> List[int]:
