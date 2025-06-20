@@ -175,3 +175,10 @@ MIT License - Feel free to use this project for learning or personal use.
 - TMDB for movie and TV show data
 - YouTube Data API for video content
 - Built with FastAPI, React, and Tailwind CSS
+
+## 📊 Analytics
+
+Track your streaming habits with built-in analytics:
+- Most searched genres
+- Platform usage statistics
+- Watch history
