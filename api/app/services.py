@@ -510,8 +510,27 @@ class RecommendationService:
 
                 # Extract collection name safely
                 collection = None
-                if media_type == "movie" and data.get("belongs_to_collection"):
-                    collection = data["belongs_to_collection"].get("name")
+                belongs_to_col = data.get("belongs_to_collection")
+                if media_type == "movie" and belongs_to_col and isinstance(belongs_to_col, dict):
+                    collection = belongs_to_col.get("name")
+
+                # Get runtime safely
+                runtime = 0
+                if media_type == "movie":
+                    runtime = data.get("runtime", 0) or 0
+                else:
+                    episode_run_times = data.get("episode_run_time")
+                    if episode_run_times and isinstance(episode_run_times, list) and len(episode_run_times) > 0:
+                        runtime = episode_run_times[0]
+
+                # Get release year safely
+                release_year = ""
+                release_date = data.get("release_date", "")
+                first_air_date = data.get("first_air_date", "")
+                if release_date and len(release_date) >= 4:
+                    release_year = release_date[:4]
+                elif first_air_date and len(first_air_date) >= 4:
+                    release_year = first_air_date[:4]
 
                 return {
                     "id": media_id,
@@ -520,11 +539,11 @@ class RecommendationService:
                     "genres": genres,
                     "keywords": keywords,
                     "companies": companies,
-                    "budget": data.get("budget", 0) if media_type == "movie" else 0,
-                    "revenue": data.get("revenue", 0) if media_type == "movie" else 0,
-                    "runtime": data.get("runtime", 0) if media_type == "movie" else data.get("episode_run_time", [0])[0] if data.get("episode_run_time") else 0,
-                    "rating": data.get("vote_average", 0),
-                    "release_year": data.get("release_date", "")[:4] if data.get("release_date") else data.get("first_air_date", "")[:4] if data.get("first_air_date") else "",
+                    "budget": data.get("budget", 0) or 0 if media_type == "movie" else 0,
+                    "revenue": data.get("revenue", 0) or 0 if media_type == "movie" else 0,
+                    "runtime": runtime,
+                    "rating": data.get("vote_average", 0) or 0,
+                    "release_year": release_year,
                     "collection": collection,
                 }
 
