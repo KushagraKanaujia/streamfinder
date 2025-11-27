@@ -6,10 +6,6 @@ A video search tool that helps you discover movies, TV shows, YouTube videos, sh
 
 **[Try StreamFinder Live](https://streamfinder-app.vercel.app)**
 
-- **Frontend**: https://streamfinder-app.vercel.app
-- **Backend API**: https://streamfinder-backend-6fs2.onrender.com
-- **API Docs**: https://streamfinder-backend-6fs2.onrender.com/docs
-
 ## What It Does
 
 StreamFinder aggregates video content from various sources and provides intelligent recommendations based on your search. Whether you're looking for movies on Netflix, shows on Prime Video, or trending YouTube content, StreamFinder finds similar content across all platforms.
@@ -157,14 +153,6 @@ streamfinder/
 - Verify both TMDB and YouTube API keys are valid
 - Check browser console for errors (F12)
 - Make sure backend terminal shows successful API responses
-
-## Contributing
-
-Feel free to fork this project and customize it for your needs. Some ideas:
-- Add more streaming platforms
-- Implement user accounts and personalized recommendations
-- Add filters for ratings, year, genre
-- Create a Chrome extension version
 
 ## License
 
