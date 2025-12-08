@@ -75,6 +75,14 @@ async def get_recommendations(
             limit=request.limit
         )
 
+        # Ensure results is a list
+        if results is None:
+            results = []
+
+        if not isinstance(results, list):
+            print(f"Warning: results is not a list, got {type(results)}")
+            results = []
+
         return {
             "success": True,
             "count": len(results),
@@ -83,10 +91,15 @@ async def get_recommendations(
         }
 
     except Exception as e:
-        # Log the error but don't expose internal details to users
+        # Log the error for debugging
+        import traceback
+        print(f"Error in recommendations endpoint: {type(e).__name__}: {str(e)}")
+        traceback.print_exc()
+
+        # Return a more helpful error message
         raise HTTPException(
             status_code=500,
-            detail="Failed to fetch recommendations. Please try again."
+            detail=f"Failed to fetch recommendations: {str(e)}"
         )
 
 

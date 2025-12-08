@@ -90,13 +90,20 @@ class RecommendationService:
                 response.raise_for_status()
                 data = response.json()
 
+                # Check for API errors
+                if "error" in data:
+                    error_msg = data["error"].get("message", "Unknown YouTube API error")
+                    print(f"YouTube API Error: {error_msg}")
+                    return self._get_mock_youtube_results(search_query)
+
                 results = []
                 for item in data.get("items", []):
                     transformed = self._transform_youtube_item(item)
                     if transformed:
                         results.append(transformed)
-                return results
-        except Exception:
+                return results if results else self._get_mock_youtube_results(search_query)
+        except Exception as e:
+            print(f"YouTube API Exception: {type(e).__name__}: {str(e)}")
             return self._get_mock_youtube_results(search_query)
 
     async def _get_tiktok_style_recommendations(self, search_query: str, region: str) -> List[Dict]:
@@ -129,7 +136,8 @@ class RecommendationService:
                         if transformed:
                             transformed["platform"] = "tiktok"
                             results.append(transformed)
-            except Exception:
+            except Exception as e:
+                print(f"TikTok search error for '{query_variant}': {type(e).__name__}: {str(e)}")
                 continue
 
         seen_ids = set()
@@ -276,7 +284,8 @@ class RecommendationService:
 
                 return None
 
-        except Exception:
+        except Exception as e:
+            print(f"TMDB search error for '{query}': {type(e).__name__}: {str(e)}")
             return None
 
     async def _get_tmdb_similar(self, media_id: int, media_type: str) -> List[Dict]:
@@ -320,7 +329,8 @@ class RecommendationService:
 
                 return similar_items[:20]  # Return top 20 popular items
 
-        except Exception:
+        except Exception as e:
+            print(f"TMDB similar error for {media_type} {media_id}: {type(e).__name__}: {str(e)}")
             return []
 
     async def _get_tmdb_watch_providers(self, media_id: int, media_type: str) -> List[Dict]:
