@@ -1,0 +1,315 @@
+{
+  "_note": "Sample data for demo mode (no API keys). Every entry is a real public YouTube video; titles and channels were taken from YouTube's oEmbed endpoint.",
+  "youtube": [
+    {
+      "id": "h4T_LlK1VE4",
+      "title": "Glitterbomb 3.0 vs. Porch Pirates",
+      "channel": "Mark Rober"
+    },
+    {
+      "id": "5iPH-br_eJQ",
+      "title": "What if We Nuke a City?",
+      "channel": "Kurzgesagt – In a Nutshell"
+    },
+    {
+      "id": "jHbyQ_AQP8c",
+      "title": "What If Everyone JUMPED At Once?",
+      "channel": "Vsauce"
+    },
+    {
+      "id": "HeQX2HjkcNo",
+      "title": "Math's Fundamental Flaw",
+      "channel": "Veritasium"
+    },
+    {
+      "id": "jG7dSXcfVqE",
+      "title": "DO WHAT YOU CAN'T",
+      "channel": "CaseyNeistat"
+    },
+    {
+      "id": "aqz-KE-bpKQ",
+      "title": "Big Buck Bunny 60fps 4K - Official Blender Foundation Short Film",
+      "channel": "Blender"
+    },
+    {
+      "id": "eRsGyueVLvQ",
+      "title": "Sintel - Open Movie by Blender Foundation",
+      "channel": "Blender"
+    },
+    {
+      "id": "9No-FiEInLA",
+      "title": "Google interns' first week",
+      "channel": "Google"
+    }
+  ],
+  "shorts": [
+    {
+      "id": "J---aiyznGQ",
+      "title": "Keyboard Cat! - THE ORIGINAL!",
+      "channel": "Keyboard Cat!"
+    },
+    {
+      "id": "1Ne1hqOXKKI",
+      "title": "How to Make a Cat Video",
+      "channel": "AaronsAnimals"
+    },
+    {
+      "id": "hY7m5jjJ9mM",
+      "title": "CATS will make you LAUGH YOUR HEAD OFF - Funny CAT compilation",
+      "channel": "Tiger FunnyWorks"
+    },
+    {
+      "id": "9bZkp7q19f0",
+      "title": "PSY - GANGNAM STYLE(강남스타일) M/V",
+      "channel": "officialpsy"
+    },
+    {
+      "id": "kJQP7kiw5Fk",
+      "title": "Luis Fonsi - Despacito ft. Daddy Yankee",
+      "channel": "LuisFonsiVEVO"
+    },
+    {
+      "id": "OPf0YbXqDm0",
+      "title": "Mark Ronson - Uptown Funk (Official Video) ft. Bruno Mars",
+      "channel": "MarkRonsonVEVO"
+    },
+    {
+      "id": "ZbZSe6N_BXs",
+      "title": "Pharrell Williams - Happy (Official Video)",
+      "channel": "PharrellWilliamsVEVO"
+    },
+    {
+      "id": "XqZsoesa55w",
+      "title": "Baby Shark Dance | #babyshark Most Viewed Video | Animal Songs | PINKFONG Songs for Children",
+      "channel": "Baby Shark - Pinkfong Kids’ Songs & Stories"
+    },
+    {
+      "id": "dQw4w9WgXcQ",
+      "title": "Rick Astley - Never Gonna Give You Up (Official Video) (4K Remaster)",
+      "channel": "Rick Astley"
+    },
+    {
+      "id": "60ItHLz5WEA",
+      "title": "Alan Walker - Faded",
+      "channel": "Alan Walker"
+    }
+  ],
+  "movies": {
+    "avengers": [
+      {
+        "id": "8ugaeA-nMTc",
+        "title": "Iron Man (2008) Trailer #1 | Movieclips Classic Trailers",
+        "channel": "Rotten Tomatoes Classic Trailers"
+      },
+      {
+        "id": "7SlILk2WMTI",
+        "title": "Marvel's Captain America: The Winter Soldier - Trailer 2 (OFFICIAL)",
+        "channel": "Marvel Entertainment"
+      },
+      {
+        "id": "JOddp-nlNvQ",
+        "title": "Thor - Trailer (OFFICIAL)",
+        "channel": "Marvel Entertainment"
+      },
+      {
+        "id": "d96cjJhvlMA",
+        "title": "Marvel's Guardians of the Galaxy - Trailer 1 (OFFICIAL)",
+        "channel": "Marvel Entertainment"
+      },
+      {
+        "id": "xjDjIWPwcPU",
+        "title": "Marvel Studios' Black Panther - Official Trailer",
+        "channel": "Marvel Entertainment"
+      },
+      {
+        "id": "HSzx-zryEgM",
+        "title": "Doctor Strange Official Trailer 2",
+        "channel": "Marvel Entertainment"
+      }
+    ],
+    "inception": [
+      {
+        "id": "zSWdZVtXT7E",
+        "title": "Interstellar - Trailer - Official Warner Bros. UK",
+        "channel": "Warner Bros. UK & Ireland"
+      },
+      {
+        "id": "5iaYLCiq5RM",
+        "title": "\"Shutter Island\" - Official Trailer [HD]",
+        "channel": "watchCulturetainment"
+      },
+      {
+        "id": "o4gHCmTQDVI",
+        "title": "The Prestige - Trailer",
+        "channel": "kindofdoon"
+      },
+      {
+        "id": "HDWylEQSwFo",
+        "title": "🎥 MEMENTO (2000) | Full Movie Trailer in HD | 1080p",
+        "channel": "MOVIE PREDICTOR"
+      },
+      {
+        "id": "AZGcmvrTX9M",
+        "title": "TENET - Final Trailer",
+        "channel": "Warner Bros."
+      },
+      {
+        "id": "m8e-FF8MsqU",
+        "title": "Matrix Trailer HD (1999)",
+        "channel": "George M.c"
+      }
+    ],
+    "interstellar": [
+      {
+        "id": "zSWdZVtXT7E",
+        "title": "Interstellar - Trailer - Official Warner Bros. UK",
+        "channel": "Warner Bros. UK & Ireland"
+      },
+      {
+        "id": "AZGcmvrTX9M",
+        "title": "TENET - Final Trailer",
+        "channel": "Warner Bros."
+      },
+      {
+        "id": "o4gHCmTQDVI",
+        "title": "The Prestige - Trailer",
+        "channel": "kindofdoon"
+      },
+      {
+        "id": "5iaYLCiq5RM",
+        "title": "\"Shutter Island\" - Official Trailer [HD]",
+        "channel": "watchCulturetainment"
+      },
+      {
+        "id": "Way9Dexny3w",
+        "title": "Dune: Part Two | Official Trailer",
+        "channel": "Warner Bros."
+      },
+      {
+        "id": "uYPbbksJxIg",
+        "title": "Oppenheimer | New Trailer",
+        "channel": "Universal Pictures"
+      }
+    ],
+    "spider-man": [
+      {
+        "id": "JfVOs4VSpmA",
+        "title": "SPIDER-MAN: NO WAY HOME - Official Trailer (HD)",
+        "channel": "Sony Pictures Entertainment"
+      },
+      {
+        "id": "g4Hbz2jLxvQ",
+        "title": "SPIDER-MAN: INTO THE SPIDER-VERSE - Official Trailer (HD)",
+        "channel": "Sony Pictures Entertainment"
+      },
+      {
+        "id": "rk-dF1lIbIg",
+        "title": "SPIDER-MAN: HOMECOMING - Official Trailer (HD)",
+        "channel": "Sony Pictures Entertainment"
+      },
+      {
+        "id": "Nt9L1jCKGnE",
+        "title": "SPIDER-MAN: FAR FROM HOME - Official Trailer",
+        "channel": "Sony Pictures Entertainment"
+      },
+      {
+        "id": "u9Mv98Gr5pY",
+        "title": "VENOM - Official Trailer (HD)",
+        "channel": "Sony Pictures Entertainment"
+      }
+    ],
+    "batman": [
+      {
+        "id": "mqqft2x_Aa4",
+        "title": "THE BATMAN – Main Trailer",
+        "channel": "Warner Bros."
+      },
+      {
+        "id": "EXeTwQWrcwY",
+        "title": "The Dark Knight (2008) Official Trailer #1 - Christopher Nolan Movie HD",
+        "channel": "Rotten Tomatoes Classic Trailers"
+      },
+      {
+        "id": "neY2xVmOfUM",
+        "title": "Batman Begins (2005) Official Trailer #1 - Christopher Nolan Movie",
+        "channel": "Rotten Tomatoes Classic Trailers"
+      },
+      {
+        "id": "zAGVQLHvwOY",
+        "title": "JOKER - Final Trailer - Now Playing In Theaters",
+        "channel": "Warner Bros."
+      },
+      {
+        "id": "3cxixDgHUYw",
+        "title": "JUSTICE LEAGUE - Official Trailer 1",
+        "channel": "Warner Bros."
+      },
+      {
+        "id": "T6DJcgm3wNY",
+        "title": "Man of Steel - Official Trailer 3 [HD]",
+        "channel": "Warner Bros."
+      }
+    ],
+    "default": [
+      {
+        "id": "Way9Dexny3w",
+        "title": "Dune: Part Two | Official Trailer",
+        "channel": "Warner Bros."
+      },
+      {
+        "id": "uYPbbksJxIg",
+        "title": "Oppenheimer | New Trailer",
+        "channel": "Universal Pictures"
+      },
+      {
+        "id": "pBk4NYhWNMM",
+        "title": "Barbie | Main Trailer",
+        "channel": "Warner Bros."
+      },
+      {
+        "id": "73_1biulkYk",
+        "title": "Deadpool & Wolverine | Official Trailer | In Theaters July 26",
+        "channel": "Marvel Entertainment"
+      },
+      {
+        "id": "wS_qbDztgVY",
+        "title": "Marvel Studios' The Marvels | Official Trailer",
+        "channel": "Marvel Entertainment"
+      },
+      {
+        "id": "giXco2jaZ_4",
+        "title": "Top Gun: Maverick | NEW Official Trailer (2022 Movie) - Tom Cruise",
+        "channel": "Paramount Pictures"
+      }
+    ]
+  },
+  "tv": {
+    "default": [
+      {
+        "id": "b9EkMc79ZSU",
+        "title": "Stranger Things | Official Final Trailer | Netflix",
+        "channel": "Netflix"
+      },
+      {
+        "id": "HhesaQXLuRY",
+        "title": "Breaking Bad Trailer (First Season)",
+        "channel": "Trailer Blend"
+      },
+      {
+        "id": "Di310WS8zLk",
+        "title": "Wednesday Addams | Official Teaser | Netflix",
+        "channel": "Netflix"
+      },
+      {
+        "id": "uLtkt8BonwM",
+        "title": "The Last of Us | Official Trailer | Max",
+        "channel": "HBO Max"
+      },
+      {
+        "id": "oqxAJKy0ii4",
+        "title": "Squid Game | Official Trailer | Netflix",
+        "channel": "Netflix"
+      }
+    ]
+  }
+}

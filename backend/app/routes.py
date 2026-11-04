@@ -3,6 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, Field, validator
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.config import settings
 from app.database import get_db
 from app.models import UserInteraction
 from app.services import RecommendationService
@@ -46,7 +47,11 @@ async def health_check():
     Quick endpoint to verify the API is running.
     Frontend pings this on startup.
     """
-    return {"status": "healthy", "service": "QuickFlicks API"}
+    return {
+        "status": "healthy",
+        "service": "StreamFinder API",
+        "demo_mode": settings.demo_mode,
+    }
 
 
 @router.post("/recommendations")
@@ -90,6 +95,9 @@ async def get_recommendations(
             "search_query": request.searchQuery,
         }
 
+    except HTTPException:
+        # Validation errors (e.g. bad category) keep their status code
+        raise
     except Exception as e:
         # Log the error for debugging
         import traceback

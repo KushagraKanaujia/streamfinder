@@ -1,0 +1,32 @@
+{
+  "name": "StreamFinder (FastAPI + React)",
+  "image": "mcr.microsoft.com/devcontainers/python:1-3.11-bookworm",
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": { "version": "20" }
+  },
+  "postCreateCommand": "pip install --user -r backend/requirements.txt pytest && cd frontend && npm ci",
+  "postAttachCommand": {
+    "backend": "cd backend && uvicorn app.main:app --host 0.0.0.0 --port 8000",
+    "frontend": "cd frontend && npm run dev"
+  },
+  "forwardPorts": [5173, 8000],
+  "portsAttributes": {
+    "5173": { "label": "StreamFinder UI", "onAutoForward": "openPreview" },
+    "8000": { "label": "API (FastAPI docs at /docs)", "onAutoForward": "silent" }
+  },
+  "secrets": {
+    "TMDB_API_KEY": {
+      "description": "Optional. Free TMDB key for live movie/TV results. Leave empty to use demo sample data.",
+      "documentationUrl": "https://www.themoviedb.org/settings/api"
+    },
+    "YOUTUBE_API_KEY": {
+      "description": "Optional. Free YouTube Data API v3 key for live video results. Leave empty to use demo sample data.",
+      "documentationUrl": "https://console.cloud.google.com/apis/library/youtube.googleapis.com"
+    }
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": ["ms-python.python", "bradlc.vscode-tailwindcss"]
+    }
+  }
+}

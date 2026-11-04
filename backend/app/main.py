@@ -23,7 +23,7 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(
-    title="QuickFlicks API",
+    title="StreamFinder API",
     description="Fast video recommendation platform",
     version=__version__,
     lifespan=lifespan,

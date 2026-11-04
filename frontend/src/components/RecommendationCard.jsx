@@ -84,7 +84,7 @@ export default function RecommendationCard({ video, position, onClick }) {
         {/* Watchlist button */}
         <button
           onClick={toggleWatchlist}
-          className="absolute top-3 right-14 bg-black/80 backdrop-blur-sm p-2 rounded-lg hover:scale-110 transition-transform z-10"
+          className="absolute bottom-3 right-3 bg-black/80 backdrop-blur-sm p-2 rounded-lg hover:scale-110 transition-transform z-10"
           title={isInWatchlist ? "Remove from watchlist" : "Add to watchlist"}
         >
           <svg className="w-5 h-5" fill={isInWatchlist ? "currentColor" : "none"} stroke="currentColor" viewBox="0 0 24 24">

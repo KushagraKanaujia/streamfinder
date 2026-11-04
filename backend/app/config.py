@@ -7,8 +7,10 @@ class Settings(BaseSettings):
     Create a .env file in the backend directory with your API keys.
     """
 
-    youtube_api_key: str
-    tmdb_api_key: str
+    # Both keys are optional: without them the API runs in demo mode and
+    # serves the bundled sample data (see sample_data.json).
+    youtube_api_key: str = ""
+    tmdb_api_key: str = ""
     database_url: str = "sqlite+aiosqlite:///./quickflicks.db"
     api_timeout: int = 10
     cache_ttl: int = 180
@@ -19,6 +21,10 @@ class Settings(BaseSettings):
         env_file_encoding="utf-8",
         case_sensitive=False
     )
+
+    @property
+    def demo_mode(self) -> bool:
+        return not (self.youtube_api_key and self.tmdb_api_key)
 
 
 settings = Settings()

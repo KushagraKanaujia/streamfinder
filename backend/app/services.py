@@ -5,6 +5,8 @@ import logging
 from typing import List, Dict, Optional
 from datetime import datetime, timedelta
 from cachetools import TTLCache
+import json
+from pathlib import Path
 import httpx
 from urllib.parse import quote
 
@@ -15,6 +17,24 @@ logger = logging.getLogger(__name__)
 
 # In-memory cache with 3-minute TTL to reduce API calls
 recommendation_cache = TTLCache(maxsize=1000, ttl=settings.cache_ttl)
+
+# Sample data used when API keys are missing or an upstream API fails.
+# Every entry is a real public YouTube video (title/channel from YouTube oEmbed).
+SAMPLE_DATA = json.loads((Path(__file__).parent / "sample_data.json").read_text(encoding="utf-8"))
+
+
+def _sample_item(entry: dict, platform: str, description: str) -> dict:
+    return {
+        "id": entry["id"],
+        "title": entry["title"],
+        "description": description,
+        "thumbnail": f"https://i.ytimg.com/vi/{entry['id']}/hqdefault.jpg",
+        "channel": entry["channel"],
+        "published_at": "2024-01-15T12:00:00Z",
+        "platform": platform,
+        "url": f"https://www.youtube.com/watch?v={entry['id']}",
+        "sample": True,
+    }
 
 
 class RecommendationService:
@@ -58,7 +78,17 @@ class RecommendationService:
         if cache_key in recommendation_cache:
             return recommendation_cache[cache_key][:limit]
 
-        if category == "youtube":
+        if settings.demo_mode:
+            # No API keys configured: serve bundled sample data
+            if category == "youtube":
+                results = self._get_mock_youtube_results(search_query)
+            elif category == "tiktok":
+                results = self._get_mock_shorts_results(search_query)
+            elif category in ["movies", "tv"]:
+                results = self._get_mock_movie_results(search_query, category)
+            else:
+                results = []
+        elif category == "youtube":
             results = await self._get_youtube_recommendations(search_query, region)
         elif category == "tiktok":
             results = await self._get_tiktok_style_recommendations(search_query, region)
@@ -807,137 +837,33 @@ class RecommendationService:
             return []
 
     def _get_mock_youtube_results(self, query: str) -> List[Dict]:
-        """Fallback mock data with REAL working YouTube videos"""
-        # Popular YouTube videos that actually work
-        videos = [
-            ("MrBeast - $1 vs $500,000 Experiences", "jk7GA4EZZrw", "https://i.ytimg.com/vi/jk7GA4EZZrw/hqdefault.jpg", "MrBeast"),
-            ("Mark Rober - Glitter Bomb 5.0", "h4T_LlK1VE4", "https://i.ytimg.com/vi/h4T_LlK1VE4/hqdefault.jpg", "Mark Rober"),
-            ("Veritasium - The Most Powerful Computers", "IxkSlnrRFqc", "https://i.ytimg.com/vi/IxkSlnrRFqc/hqdefault.jpg", "Veritasium"),
-            ("Marques Brownlee - iPhone 15 Review", "TUXpoM9OY3M", "https://i.ytimg.com/vi/TUXpoM9OY3M/hqdefault.jpg", "MKBHD"),
-            ("Kurzgesagt - What if You Detonated a Nuclear Bomb", "5iPH-br_eJQ", "https://i.ytimg.com/vi/5iPH-br_eJQ/hqdefault.jpg", "Kurzgesagt"),
-            ("Vsauce - What If Everyone Jumped at Once", "jHbyQ_AQP8c", "https://i.ytimg.com/vi/jHbyQ_AQP8c/hqdefault.jpg", "Vsauce"),
-            ("Dude Perfect - Extreme Hide and Seek", "rf0Lsjewg8c", "https://i.ytimg.com/vi/rf0Lsjewg8c/hqdefault.jpg", "Dude Perfect"),
-            ("Casey Neistat - DO WHAT YOU CAN'T", "jG7dSXcfVqE", "https://i.ytimg.com/vi/jG7dSXcfVqE/hqdefault.jpg", "Casey Neistat"),
-        ]
-
+        """Fallback sample YouTube videos (see sample_data.json)."""
         return [
-            {
-                "id": video_id,
-                "title": title,
-                "description": f"Popular video about {query}",
-                "thumbnail": thumbnail,
-                "channel": channel,
-                "published_at": "2024-01-15T12:00:00Z",
-                "platform": "youtube",
-                "url": f"https://www.youtube.com/watch?v={video_id}",
-            }
-            for title, video_id, thumbnail, channel in videos
+            _sample_item(e, "youtube", f"Sample result for \"{query}\" (demo mode)")
+            for e in SAMPLE_DATA["youtube"]
         ]
 
     def _get_mock_shorts_results(self, query: str) -> List[Dict]:
-        """Fallback mock data with REAL working YouTube Shorts"""
-        # Real popular YouTube Shorts that work
-        shorts = [
-            ("Labubu Unboxing #1", "nXA_f0xBSjw", "https://i.ytimg.com/vi/nXA_f0xBSjw/hqdefault.jpg", "Toy Reviews"),
-            ("Labubu Collection Tour", "8VGF-rQqF7Q", "https://i.ytimg.com/vi/8VGF-rQqF7Q/hqdefault.jpg", "Collectibles Hub"),
-            ("Viral Dance Trend", "2g6J6vT5mBU", "https://i.ytimg.com/vi/2g6J6vT5mBU/hqdefault.jpg", "TikTok Dancer"),
-            ("Funny Cat Moment", "J---aiyznGQ", "https://i.ytimg.com/vi/J---aiyznGQ/hqdefault.jpg", "Cat Lover"),
-            ("Quick Recipe Hack", "0FTw0UHb3vw", "https://i.ytimg.com/vi/0FTw0UHb3vw/hqdefault.jpg", "Food Shorts"),
-            ("Life Hack You Need", "dQw4w9WgXcQ", "https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg", "Daily Tips"),
-            ("Satisfying Video", "9bZkp7q19f0", "https://i.ytimg.com/vi/9bZkp7q19f0/hqdefault.jpg", "Oddly Satisfying"),
-            ("Epic Fail Compilation", "K5le9sYdYkM", "https://i.ytimg.com/vi/K5le9sYdYkM/hqdefault.jpg", "Fail Army"),
-            ("Magic Trick Revealed", "YbJOTdZBX1g", "https://i.ytimg.com/vi/YbJOTdZBX1g/hqdefault.jpg", "Magic Show"),
-            ("Cute Puppy Reaction", "2Vv-BfVoq4g", "https://i.ytimg.com/vi/2Vv-BfVoq4g/hqdefault.jpg", "Pet Channel"),
-        ]
-
+        """Fallback sample short-form videos (see sample_data.json)."""
         return [
-            {
-                "id": video_id,
-                "title": title,
-                "description": f"Viral {query} content",
-                "thumbnail": thumbnail,
-                "channel": channel,
-                "published_at": "2024-01-15T12:00:00Z",
-                "platform": "tiktok",
-                "url": f"https://www.youtube.com/watch?v={video_id}",
-            }
-            for title, video_id, thumbnail, channel in shorts
+            _sample_item(e, "tiktok", f"Sample result for \"{query}\" (demo mode)")
+            for e in SAMPLE_DATA["shorts"]
         ]
 
     def _get_mock_movie_results(self, query: str, category: str) -> List[Dict]:
-        """Fallback mock data for movies/TV with REAL working YouTube video IDs"""
-
-        # Real YouTube video IDs for popular movie/TV trailers
-        recommendations = {
-            "avengers": [
-                ("Iron Man Official Trailer", "8ugaeA-nMTc", "https://i.ytimg.com/vi/8ugaeA-nMTc/hqdefault.jpg"),
-                ("Captain America: Winter Soldier Trailer", "7SlILk2WMTI", "https://i.ytimg.com/vi/7SlILk2WMTI/hqdefault.jpg"),
-                ("Thor Official Trailer", "JOddp-nlNvQ", "https://i.ytimg.com/vi/JOddp-nlNvQ/hqdefault.jpg"),
-                ("Guardians of the Galaxy Trailer", "d96cjJhvlMA", "https://i.ytimg.com/vi/d96cjJhvlMA/hqdefault.jpg"),
-                ("Black Panther Official Trailer", "xjDjIWPwcPU", "https://i.ytimg.com/vi/xjDjIWPwcPU/hqdefault.jpg"),
-                ("Doctor Strange Trailer", "HSzx-zryEgM", "https://i.ytimg.com/vi/HSzx-zryEgM/hqdefault.jpg"),
-            ],
-            "inception": [
-                ("Interstellar Trailer", "zSWdZVtXT7E", "https://i.ytimg.com/vi/zSWdZVtXT7E/hqdefault.jpg"),
-                ("Shutter Island Trailer", "5iaYLCiq5RM", "https://i.ytimg.com/vi/5iaYLCiq5RM/hqdefault.jpg"),
-                ("The Prestige Trailer", "o4gHCmTQDVI", "https://i.ytimg.com/vi/o4gHCmTQDVI/hqdefault.jpg"),
-                ("Memento Trailer", "HDWylEQSwFo", "https://i.ytimg.com/vi/HDWylEQSwFo/hqdefault.jpg"),
-                ("Tenet Trailer", "AZGcmvrTX9M", "https://i.ytimg.com/vi/AZGcmvrTX9M/hqdefault.jpg"),
-                ("The Matrix Trailer", "m8e-FF8MsqU", "https://i.ytimg.com/vi/m8e-FF8MsqU/hqdefault.jpg"),
-            ],
-            "spider-man": [
-                ("Spider-Man: No Way Home", "JfVOs4VSpmA", "https://i.ytimg.com/vi/JfVOs4VSpmA/hqdefault.jpg"),
-                ("Spider-Man: Into the Spider-Verse", "g4Hbz2jLxvQ", "https://i.ytimg.com/vi/g4Hbz2jLxvQ/hqdefault.jpg"),
-                ("The Amazing Spider-Man", "DyLUwOcR5pk", "https://i.ytimg.com/vi/DyLUwOcR5pk/hqdefault.jpg"),
-                ("Spider-Man: Homecoming", "rk-dF1lIbIg", "https://i.ytimg.com/vi/rk-dF1lIbIg/hqdefault.jpg"),
-                ("Spider-Man: Far From Home", "Nt9L1jCKGnE", "https://i.ytimg.com/vi/Nt9L1jCKGnE/hqdefault.jpg"),
-                ("Venom", "u9Mv98Gr5pY", "https://i.ytimg.com/vi/u9Mv98Gr5pY/hqdefault.jpg"),
-            ],
-            "batman": [
-                ("The Batman Trailer", "mqqft2x_Aa4", "https://i.ytimg.com/vi/mqqft2x_Aa4/hqdefault.jpg"),
-                ("The Dark Knight Trailer", "EXeTwQWrcwY", "https://i.ytimg.com/vi/EXeTwQWrcwY/hqdefault.jpg"),
-                ("Batman Begins Trailer", "neY2xVmOfUM", "https://i.ytimg.com/vi/neY2xVmOfUM/hqdefault.jpg"),
-                ("Joker Trailer", "zAGVQLHvwOY", "https://i.ytimg.com/vi/zAGVQLHvwOY/hqdefault.jpg"),
-                ("Justice League Trailer", "3cxixDgHUYw", "https://i.ytimg.com/vi/3cxixDgHUYw/hqdefault.jpg"),
-                ("Superman Man of Steel", "T6DJcgm3wNY", "https://i.ytimg.com/vi/T6DJcgm3wNY/hqdefault.jpg"),
-            ],
-        }
-
-        # Find relevant recommendations
-        query_lower = query.lower()
-
-        # Try exact match first
-        if query_lower in recommendations:
-            videos = recommendations[query_lower]
-        else:
-            # Partial match or default
-            for key in recommendations:
-                if key in query_lower or query_lower in key:
-                    videos = recommendations[key]
-                    break
-            else:
-                # Default popular trailers
-                videos = [
-                    ("Dune: Part Two Trailer", "Way9Dexny3w", "https://i.ytimg.com/vi/Way9Dexny3w/hqdefault.jpg"),
-                    ("Oppenheimer Trailer", "uYPbbksJxIg", "https://i.ytimg.com/vi/uYPbbksJxIg/hqdefault.jpg"),
-                    ("Barbie Trailer", "pBk4NYhWNMM", "https://i.ytimg.com/vi/pBk4NYhWNMM/hqdefault.jpg"),
-                    ("Deadpool & Wolverine", "73_1biulkYk", "https://i.ytimg.com/vi/73_1biulkYk/hqdefault.jpg"),
-                    ("The Marvels Trailer", "wS_qbDztgVY", "https://i.ytimg.com/vi/wS_qbDztgVY/hqdefault.jpg"),
-                    ("Top Gun: Maverick", "giXco2jaZ_4", "https://i.ytimg.com/vi/giXco2jaZ_4/hqdefault.jpg"),
-                ]
-
+        """Fallback sample trailers for movies/TV (see sample_data.json)."""
+        groups = SAMPLE_DATA["movies"] if category == "movies" else SAMPLE_DATA["tv"]
+        query_lower = query.lower().strip()
+        videos = groups.get(query_lower)
+        if videos is None:
+            videos = next(
+                (v for key, v in groups.items()
+                 if key != "default" and (key in query_lower or query_lower in key)),
+                groups["default"],
+            )
         return [
-            {
-                "id": video_id,
-                "title": title,
-                "description": f"Watch the official trailer",
-                "thumbnail": thumbnail,
-                "channel": "Official Movie Trailers",
-                "published_at": "2024-01-10T12:00:00Z",
-                "platform": category,
-                "url": f"https://www.youtube.com/watch?v={video_id}",
-            }
-            for title, video_id, thumbnail in videos
+            _sample_item(e, "youtube", "Official trailer on YouTube (demo sample data)")
+            for e in videos
         ]
 
     def _score_and_rank(self, results: List[Dict]) -> List[Dict]:

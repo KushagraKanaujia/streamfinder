@@ -1,0 +1,10 @@
+# Static demo of the StreamFinder frontend (no backend, no API keys).
+# Deployed manually with the Netlify CLI; see README.
+[build]
+  base = "frontend"
+  command = "npm ci && npm run build"
+  publish = "dist"
+
+[build.environment]
+  VITE_DEMO_MODE = "true"
+  NODE_VERSION = "20"
