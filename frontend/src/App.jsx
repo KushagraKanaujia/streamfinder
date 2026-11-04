@@ -2,6 +2,12 @@ import { useState, useEffect } from 'react'
 import FilterWizard from './components/FilterWizard'
 import RecommendationCard from './components/RecommendationCard'
 import LoadingState from './components/LoadingState'
+import { getDemoRecommendations } from './demo'
+
+// VITE_DEMO_MODE=true -> never call a backend, use bundled sample data.
+const DEMO_MODE = import.meta.env.VITE_DEMO_MODE === 'true'
+// In dev, '' means "same origin" so Vite's /api proxy reaches the local backend.
+const API_BASE = import.meta.env.VITE_API_URL ?? (import.meta.env.DEV ? '' : 'https://streamfinder-backend-6fs2.onrender.com')
 
 function App() {
   const [recommendations, setRecommendations] = useState([])
@@ -9,10 +15,11 @@ function App() {
   const [error, setError] = useState(null)
   const [sessionId] = useState(() => Math.random().toString(36).substring(7))
   const [showResults, setShowResults] = useState(false)
-  const API_BASE = import.meta.env.VITE_API_URL || 'https://streamfinder-backend-6fs2.onrender.com'
+  const [usingSampleData, setUsingSampleData] = useState(DEMO_MODE)
 
   // Check backend health on mount
   useEffect(() => {
+    if (DEMO_MODE) return
     fetch(`${API_BASE}/api/health`)
       .then((res) => res.json())
       .then((data) => console.log('Backend connected:', data))
@@ -23,6 +30,15 @@ function App() {
     setLoading(true)
     setError(null)
     setShowResults(true)
+
+    if (DEMO_MODE) {
+      // Small delay so the loading animation is visible, like a real request
+      await new Promise((r) => setTimeout(r, 500))
+      setRecommendations(getDemoRecommendations({ category, searchQuery }))
+      setUsingSampleData(true)
+      setLoading(false)
+      return
+    }
 
     try {
       const response = await fetch(`${API_BASE}/api/recommendations`, {
@@ -41,6 +57,7 @@ function App() {
       }
 
       const data = await response.json()
+      setUsingSampleData(Boolean(data?.results?.[0]?.sample))
 
       // Check if we have results
       if (data && data.results && Array.isArray(data.results)) {
@@ -58,8 +75,10 @@ function App() {
         setError('No recommendations found. Try a different search.')
       }
     } catch (err) {
-      setError('Something went wrong. Please try again.')
-      console.error('Error fetching recommendations:', err)
+      // Backend unreachable: fall back to bundled sample data so the UI still works
+      console.error('Error fetching recommendations, using sample data:', err)
+      setRecommendations(getDemoRecommendations({ category, searchQuery }))
+      setUsingSampleData(true)
     } finally {
       setLoading(false)
     }
@@ -78,6 +97,7 @@ function App() {
   }
 
   const logInteraction = async (data) => {
+    if (DEMO_MODE) return
     try {
       await fetch(`${API_BASE}/api/interactions`, {
         method: 'POST',
@@ -185,6 +205,18 @@ function App() {
                   </div>
                 )}
               </div>
+
+              {/* Demo / sample data notice */}
+              {!loading && usingSampleData && recommendations.length > 0 && (
+                <div className="bg-amber-500/10 border border-amber-500/60 text-amber-100 px-5 py-3 rounded-2xl mb-6 text-sm">
+                  <strong className="font-semibold">Demo mode:</strong> showing bundled sample results (real YouTube
+                  videos), not live search. Run it with free TMDB + YouTube API keys for real recommendations —{' '}
+                  <a className="underline" href="https://github.com/KushagraKanaujia/streamfinder#run-it-locally" target="_blank" rel="noreferrer">
+                    see the README
+                  </a>
+                  .
+                </div>
+              )}
 
               {/* Error State */}
               {error && (

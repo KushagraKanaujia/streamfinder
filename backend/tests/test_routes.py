@@ -24,3 +24,22 @@ def test_recommendations_empty_query():
         "region": "US"
     })
     assert response.status_code == 422
+
+
+def test_health_reports_demo_mode():
+    response = client.get("/api/health")
+    assert "demo_mode" in response.json()
+
+
+def test_recommendations_return_results():
+    # With no API keys configured this exercises the bundled sample data.
+    for category in ["movies", "tv", "youtube", "tiktok"]:
+        response = client.post("/api/recommendations", json={
+            "category": category,
+            "searchQuery": "inception",
+            "region": "US",
+        })
+        assert response.status_code == 200
+        body = response.json()
+        assert body["count"] > 0
+        assert all(r["url"].startswith("https://") for r in body["results"])

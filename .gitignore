@@ -60,3 +60,6 @@ logs/
 .coverage
 htmlcov/
 .pytest_cache/
+
+# Local Netlify folder
+.netlify
